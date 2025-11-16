@@ -3,7 +3,9 @@
 export function adjustBodyPadding() {
   const header = document.querySelector('#h');
   if (!header) {
-    throw new Error('Header were not found');
+    // Header is optional - if not found, set padding to 0
+    document.documentElement.style.scrollPaddingTop = '0px';
+    return;
   }
   const { height: headerHeight } = header.getBoundingClientRect();
   document.documentElement.style.scrollPaddingTop = `${headerHeight}px`;
