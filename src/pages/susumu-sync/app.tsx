@@ -35,7 +35,7 @@ export function App() {
             <Content />
           </SpaceBetween>
         }
-        breadcrumbs={<Breadcrumbs items={[{ text: 'Dashboard', href: '#/' }]} />}
+        breadcrumbs={<Breadcrumbs items={[{ text: 'Dashboard', href: '#/' }]} rootText="SusumuSync" />}
         navigation={<SusumuSyncSideNavigation />}
         navigationOpen={navigationOpen}
         onNavigationChange={({ detail }) => setNavigationOpen(detail.open)}

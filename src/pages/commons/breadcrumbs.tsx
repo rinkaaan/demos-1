@@ -4,10 +4,16 @@ import React from 'react';
 
 import BreadcrumbGroup, { BreadcrumbGroupProps } from '@cloudscape-design/components/breadcrumb-group';
 
-export function Breadcrumbs({ items }: { items: BreadcrumbGroupProps['items'] }) {
+export function Breadcrumbs({
+  items,
+  rootText = 'Service',
+}: {
+  items: BreadcrumbGroupProps['items'];
+  rootText?: string;
+}) {
   return (
     <BreadcrumbGroup
-      items={[{ text: 'Service', href: '#' }, ...items]}
+      items={[{ text: rootText, href: '#' }, ...items]}
       expandAriaLabel="Show path"
       ariaLabel="Breadcrumbs"
     />
