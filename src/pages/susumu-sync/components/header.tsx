@@ -40,7 +40,7 @@ export function SusumuSyncHeader({ actions }: { actions: React.ReactNode }) {
       info={<InfoLink onFollow={() => loadHelpPanelContent(<SusumuSyncMainInfo />)} />}
       actions={actions}
     >
-      Susumu Sync
+      Dashboard
     </Header>
   );
 }
