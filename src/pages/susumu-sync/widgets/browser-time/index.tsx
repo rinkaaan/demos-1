@@ -4,7 +4,6 @@ import React from 'react';
 
 import { CartesianChart } from '@cloudscape-design/chart-components';
 import Box from '@cloudscape-design/components/box';
-import Button from '@cloudscape-design/components/button';
 import Header from '@cloudscape-design/components/header';
 import Link from '@cloudscape-design/components/link';
 
@@ -20,15 +19,7 @@ import { browserTimeData, browserTimeSeries } from './data';
 
 function BrowserTimeHeader() {
   return (
-    <Header
-      variant="h2"
-      description="Daily browser time by website"
-      actions={
-        <Button variant="normal" href="#">
-          Go to chart
-        </Button>
-      }
-    >
+    <Header variant="h2" description="Daily browser time by website" actions={undefined}>
       Browser time
     </Header>
   );

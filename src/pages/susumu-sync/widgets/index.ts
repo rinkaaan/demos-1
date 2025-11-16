@@ -2,4 +2,5 @@
 // SPDX-License-Identifier: MIT-0
 export { BaseStaticWidget } from './base-static-widget';
 export { browserTime } from './browser-time';
+export { schedule } from './schedule';
 export { todos } from './todos';

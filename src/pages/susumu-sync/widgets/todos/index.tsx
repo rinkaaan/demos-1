@@ -24,7 +24,7 @@ function TodosHeader() {
       counter="(150)"
       actions={
         <Button variant="normal" href="#" iconName="add-plus" iconAlign="right">
-          Add new todo
+          Add todo
         </Button>
       }
     >
@@ -37,7 +37,7 @@ function TodosFooter() {
   return (
     <Box textAlign="center">
       <Link href="#" variant="primary">
-        View all todos
+        View todos
       </Link>
     </Box>
   );

@@ -23,7 +23,7 @@ const navItems: SideNavigationProps['items'] = [
     type: 'section',
     defaultExpanded: true,
     items: [
-      { type: 'link', text: 'Charts', href: '#/charts' },
+      { type: 'link', text: 'Browser time', href: '#/browser_time' },
       { type: 'link', text: 'Browser history', href: '#/browser_history' },
       { type: 'link', text: 'Bookmarks', href: '#/bookmarks' },
     ],
