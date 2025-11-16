@@ -21,7 +21,6 @@ interface Item {
 function TodosHeader() {
   return (
     <Header
-      counter="(150)"
       actions={
         <Button variant="normal" href="#" iconName="add-plus" iconAlign="right">
           Add todo
