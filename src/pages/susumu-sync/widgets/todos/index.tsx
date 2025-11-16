@@ -48,14 +48,12 @@ const todosDefinition: TableProps<Item>['columnDefinitions'] = [
     id: 'name',
     header: 'Todo',
     cell: item => <Link href="#">{item.name}</Link>,
-    width: 341,
     isRowHeader: true,
   },
   {
     id: 'status',
     header: 'Status',
     cell: ({ statusText, status }) => <StatusIndicator type={status}>{statusText}</StatusIndicator>,
-    width: 164,
   },
 ];
 
@@ -72,7 +70,7 @@ function TodosContent() {
     <Table
       enableKeyboardNavigation={true}
       variant="borderless"
-      resizableColumns={true}
+      resizableColumns={false}
       items={todosItems}
       columnDefinitions={todosDefinition}
     />
