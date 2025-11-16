@@ -4,19 +4,7 @@ import React from 'react';
 
 import Grid from '@cloudscape-design/components/grid';
 
-import {
-  alarms,
-  BaseStaticWidget,
-  events,
-  featuresSpotlight,
-  instanceHours,
-  instanceLimits,
-  networkTraffic,
-  serviceHealth,
-  serviceOverview,
-  todos,
-  zoneStatus,
-} from '../widgets';
+import { BaseStaticWidget, instanceHours, todos } from '../widgets';
 
 export function Content() {
   return (
@@ -36,18 +24,7 @@ export function Content() {
         { colspan: { l: 6, m: 6, default: 12 } },
       ]}
     >
-      {[
-        serviceOverview,
-        serviceHealth,
-        todos,
-        instanceHours,
-        networkTraffic,
-        alarms,
-        instanceLimits,
-        events,
-        zoneStatus,
-        featuresSpotlight,
-      ].map((widget, index) => (
+      {[todos, instanceHours].map((widget, index) => (
         <BaseStaticWidget key={index} config={widget.data} />
       ))}
     </Grid>
