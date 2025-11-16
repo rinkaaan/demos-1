@@ -4,10 +4,7 @@ import React from 'react';
 
 import { BoardProps } from '@cloudscape-design/board-components/board';
 
-import * as icons from '../icons';
-
 export interface WidgetDataType {
-  icon: keyof typeof icons;
   title: string;
   description: string;
   disableContentPaddings?: boolean;

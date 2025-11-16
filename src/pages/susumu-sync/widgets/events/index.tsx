@@ -75,7 +75,6 @@ export default function EventsContent() {
 export const events: WidgetConfig = {
   definition: { defaultRowSpan: 4, defaultColumnSpan: 2 },
   data: {
-    icon: 'table',
     title: 'Events',
     description: 'View your service events',
     disableContentPaddings: !isVisualRefresh,

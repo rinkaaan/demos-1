@@ -67,7 +67,6 @@ function InstanceHoursContent() {
 export const instanceHours: WidgetConfig = {
   definition: { defaultRowSpan: 4, defaultColumnSpan: 2, minRowSpan: 3 },
   data: {
-    icon: 'barChart',
     title: 'Instance hours',
     description: 'Daily instance hours by instance type',
     header: InstanceHoursHeader,

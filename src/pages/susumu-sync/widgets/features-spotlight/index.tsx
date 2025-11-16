@@ -63,7 +63,6 @@ export function FeaturesSpotlightContent() {
 export const featuresSpotlight: WidgetConfig = {
   definition: { defaultRowSpan: 3, defaultColumnSpan: 3 },
   data: {
-    icon: 'list',
     title: 'Features spotlight',
     description: 'Updates on features available in the current region',
     header: FeaturesSpotlightHeader,

@@ -61,7 +61,6 @@ function ServiceOverviewWidget() {
 export const serviceOverview: WidgetConfig = {
   definition: { defaultRowSpan: 2, defaultColumnSpan: 3 },
   data: {
-    icon: 'list',
     title: 'Service overview',
     description: 'Overview of all your resources',
     header: ServiceOverviewHeader,

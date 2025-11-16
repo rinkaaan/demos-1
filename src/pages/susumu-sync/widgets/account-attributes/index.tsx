@@ -37,7 +37,6 @@ function AccountAttributesContent() {
 export const accountAttributes: WidgetConfig = {
   definition: { defaultRowSpan: 3, defaultColumnSpan: 1 },
   data: {
-    icon: 'list',
     title: 'Account attributes',
     description: 'General info about current account',
     header: AccountAttributesHeader,

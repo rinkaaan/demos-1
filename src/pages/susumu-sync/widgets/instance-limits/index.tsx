@@ -107,7 +107,6 @@ export default function InstanceLimitsContent() {
 export const instanceLimits: WidgetConfig = {
   definition: { defaultRowSpan: 3, defaultColumnSpan: 2 },
   data: {
-    icon: 'table',
     title: 'Instance limits',
     description: 'Current utilization of instance types',
     disableContentPaddings: !isVisualRefresh,

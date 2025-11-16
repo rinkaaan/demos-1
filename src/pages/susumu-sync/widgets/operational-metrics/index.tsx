@@ -149,7 +149,6 @@ function OperationalMetricsContent() {
 export const operationalMetrics: WidgetConfig = {
   definition: { defaultRowSpan: 4, defaultColumnSpan: 3 },
   data: {
-    icon: 'mixedContent',
     title: 'Operational metrics',
     description: 'Operational metrics of your service',
     provider: OperationalMetricsProvider,

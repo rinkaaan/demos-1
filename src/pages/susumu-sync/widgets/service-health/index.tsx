@@ -43,7 +43,6 @@ export default function ServiceHealthContent() {
 export const serviceHealth: WidgetConfig = {
   definition: { defaultRowSpan: 2, defaultColumnSpan: 1 },
   data: {
-    icon: 'list',
     title: 'Service Health',
     description: 'General information about service health',
     header: ServiceHealthHeader,

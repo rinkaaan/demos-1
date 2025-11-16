@@ -81,7 +81,6 @@ function AlarmsContent() {
 export const alarms: WidgetConfig = {
   definition: { defaultRowSpan: 3, defaultColumnSpan: 2 },
   data: {
-    icon: 'table',
     title: 'Alarms',
     description: 'View all your alarms',
     disableContentPaddings: !isVisualRefresh,

@@ -63,7 +63,6 @@ function ZoneStatusContent() {
 export const zoneStatus: WidgetConfig = {
   definition: { defaultRowSpan: 4, defaultColumnSpan: 2, minRowSpan: 3 },
   data: {
-    icon: 'pieChart',
     title: 'Zone status',
     description: 'Zone status report',
     header: ZoneStatusHeader,
