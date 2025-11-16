@@ -6,7 +6,7 @@ import { AppLayoutProps } from '@cloudscape-design/components/app-layout';
 import Button from '@cloudscape-design/components/button';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 
-import { Breadcrumbs, HelpPanelProvider, Notifications } from '../commons';
+import { Breadcrumbs, HelpPanelProvider } from '../commons';
 import { CustomAppLayout } from '../commons/common-components';
 import { Content } from './components/content';
 import { SusumuSyncHeader, SusumuSyncMainInfo } from './components/header';
@@ -16,6 +16,7 @@ import '@cloudscape-design/global-styles/dark-mode-utils.css';
 
 export function App() {
   const [toolsOpen, setToolsOpen] = useState(false);
+  const [navigationOpen, setNavigationOpen] = useState(false);
   const [toolsContent, setToolsContent] = useState<React.ReactNode>(() => <SusumuSyncMainInfo />);
   const appLayout = useRef<AppLayoutProps.Ref>(null);
 
@@ -37,10 +38,11 @@ export function App() {
         }
         breadcrumbs={<Breadcrumbs items={[{ text: 'Susumu Sync', href: '#/' }]} />}
         navigation={<SusumuSyncSideNavigation />}
+        navigationOpen={navigationOpen}
+        onNavigationChange={({ detail }) => setNavigationOpen(detail.open)}
         tools={toolsContent}
         toolsOpen={toolsOpen}
         onToolsChange={({ detail }) => setToolsOpen(detail.open)}
-        notifications={<Notifications />}
       />
     </HelpPanelProvider>
   );

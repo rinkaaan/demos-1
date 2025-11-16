@@ -14,6 +14,7 @@ import {
   networkTraffic,
   serviceHealth,
   serviceOverview,
+  todos,
   zoneStatus,
 } from '../widgets';
 
@@ -31,11 +32,14 @@ export function Content() {
         { colspan: { l: 6, m: 6, default: 12 } },
         { colspan: { l: 8, m: 8, default: 12 } },
         { colspan: { l: 4, m: 4, default: 12 } },
+        { colspan: { l: 6, m: 6, default: 12 } },
+        { colspan: { l: 6, m: 6, default: 12 } },
       ]}
     >
       {[
         serviceOverview,
         serviceHealth,
+        todos,
         instanceHours,
         networkTraffic,
         alarms,
