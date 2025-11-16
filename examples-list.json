@@ -108,6 +108,10 @@
     "title": "Service dashboard"
   },
   {
+    "path": "susumu-sync",
+    "title": "Susumu Sync"
+  },
+  {
     "path": "configurable-dashboard",
     "title": "Configurable dashboard"
   },
