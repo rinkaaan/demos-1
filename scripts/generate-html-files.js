@@ -28,6 +28,7 @@ function applyTheme(filename, extension) {
 function getPageContent(pageName, { title }) {
   const systemName = 'Cloudscape';
   const pageTitle = `${systemName} Demos - ${title}`;
+  const header = pageName === 'non-console' ? '<header id="h"></header>' : '';
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,6 +40,7 @@ function getPageContent(pageName, { title }) {
 <!-- this class is not needed in production, only for testing -->
 <body class="awsui-visual-refresh">
 <div id="b">
+    ${header}
     ${frameworkUtils.initialMarkup}
 </div>
 <script src="./libs/fake-server.js"></script>
