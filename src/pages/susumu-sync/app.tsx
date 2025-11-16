@@ -3,7 +3,6 @@
 import React, { useRef, useState } from 'react';
 
 import { AppLayoutProps } from '@cloudscape-design/components/app-layout';
-import Button from '@cloudscape-design/components/button';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 
 import { Breadcrumbs, HelpPanelProvider } from '../commons';
@@ -32,7 +31,7 @@ export function App() {
         ref={appLayout}
         content={
           <SpaceBetween size="m">
-            <SusumuSyncHeader actions={<Button variant="primary">Launch instance</Button>} />
+            <SusumuSyncHeader actions={undefined} />
             <Content />
           </SpaceBetween>
         }
