@@ -2,11 +2,12 @@ import React from 'react';
 
 import Grid from '@cloudscape-design/components/grid';
 
-import { BaseStaticWidget, browserTime } from '../widgets';
+import { BaseStaticWidget, browserTime, serviceOverview } from '../widgets';
 
 export function Content() {
   return (
-    <Grid gridDefinition={[{ colspan: { l: 4, m: 6, default: 12 } }]}>
+    <Grid gridDefinition={[{ colspan: { l: 12, m: 12, default: 12 } }, { colspan: { l: 6, m: 6, default: 12 } }]}>
+      <BaseStaticWidget config={serviceOverview.data} />
       <BaseStaticWidget config={browserTime.data} />
     </Grid>
   );
