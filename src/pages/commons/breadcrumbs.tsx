@@ -7,13 +7,15 @@ import BreadcrumbGroup, { BreadcrumbGroupProps } from '@cloudscape-design/compon
 export function Breadcrumbs({
   items,
   rootText = 'Service',
+  rootHref = '#',
 }: {
   items: BreadcrumbGroupProps['items'];
   rootText?: string;
+  rootHref?: string;
 }) {
   return (
     <BreadcrumbGroup
-      items={[{ text: rootText, href: '#' }, ...items]}
+      items={[{ text: rootText, href: rootHref }, ...items]}
       expandAriaLabel="Show path"
       ariaLabel="Breadcrumbs"
     />

@@ -5,14 +5,8 @@ import React, { useState } from 'react';
 import { SideNavigationProps } from '@cloudscape-design/components/side-navigation';
 
 import { Navigation as CommonNavigation } from '../../commons';
+import { useRouter } from '../router';
 import { DensityPreferencesDialog } from './density-preferences';
-
-type Route = 'dashboard' | 'product-detail';
-
-interface SusumuSyncSideNavigationProps {
-  onRouteChange: (route: Route) => void;
-  currentRoute: Route;
-}
 
 const navItems: SideNavigationProps['items'] = [
   { type: 'link', text: 'Dashboard', href: '#/' },
@@ -43,29 +37,24 @@ const navItems: SideNavigationProps['items'] = [
   },
 ];
 
-export function SusumuSyncSideNavigation({ onRouteChange, currentRoute }: SusumuSyncSideNavigationProps) {
+export function SusumuSyncSideNavigation() {
   const [dialogVisible, setDialogVisible] = useState(false);
+  const { currentPath } = useRouter();
+
   const onFollowHandler: SideNavigationProps['onFollow'] = event => {
-    event.preventDefault();
-    const href = event.detail.href;
-
-    if (href === '#/density_settings') {
+    if (event.detail.href === '#/density_settings') {
+      event.preventDefault();
       setDialogVisible(true);
-    } else if (href === '#/') {
-      onRouteChange('dashboard');
-    } else if (href === '#/susumu-sync') {
-      onRouteChange('product-detail');
     }
+    // Let other navigation happen naturally via hash change
   };
-
-  const activeHref = currentRoute === 'dashboard' ? '#/' : '#/susumu-sync';
 
   return (
     <>
       <CommonNavigation
         header={{ text: 'Susumu Sync', href: '#/susumu-sync' }}
         items={navItems}
-        activeHref={activeHref}
+        activeHref={currentPath ? `#${currentPath}` : '#/'}
         onFollowHandler={onFollowHandler}
       />
       {dialogVisible && <DensityPreferencesDialog onDismiss={() => setDialogVisible(false)} />}
