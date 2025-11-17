@@ -101,5 +101,8 @@
       "./scripts/clean-package-lock.js"
     ]
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "zustand": "^5.0.8"
+  }
 }

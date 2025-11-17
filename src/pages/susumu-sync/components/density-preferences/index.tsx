@@ -10,7 +10,7 @@ import SpaceBetween from '@cloudscape-design/components/space-between';
 import Tiles from '@cloudscape-design/components/tiles';
 import { Density } from '@cloudscape-design/global-styles';
 
-import { currentDensity, updateDensity } from '../../../../common/apply-mode';
+import { useSettingsStore } from '../../store';
 import { comfortableModeImage, compactModeImage } from './images';
 
 interface DensityPreferencesDialogProps {
@@ -18,10 +18,12 @@ interface DensityPreferencesDialogProps {
 }
 
 export function DensityPreferencesDialog({ onDismiss }: DensityPreferencesDialogProps) {
-  const [value, setValue] = useState<Density>(currentDensity ?? 'comfortable');
+  const density = useSettingsStore(state => state.density);
+  const setDensity = useSettingsStore(state => state.setDensity);
+  const [value, setValue] = useState<Density>(density);
 
   const handleSubmit = () => {
-    updateDensity(value);
+    setDensity(value);
     onDismiss();
   };
 
