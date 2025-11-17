@@ -7,10 +7,12 @@ import SpaceBetween from '@cloudscape-design/components/space-between';
 import { Content } from './components/content';
 import { SusumuSyncHeader } from './components/header';
 import { ProductDetailContent } from './components/product-detail';
+import { SettingsPage } from './components/settings';
 
 const pages: Record<string, FC> = {
   '/': DashboardPage,
   '/susumu-sync': ProductDetailPage,
+  '/settings': SettingsPage,
 };
 
 function DashboardPage() {

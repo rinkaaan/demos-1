@@ -35,6 +35,11 @@ const navItems: SideNavigationProps['items'] = [
     href: '#/density_settings',
     text: 'Density settings',
   },
+  {
+    type: 'link',
+    href: '#/settings',
+    text: 'Settings',
+  },
 ];
 
 export function SusumuSyncSideNavigation() {

@@ -29,6 +29,9 @@ export function App() {
     if (currentPath === '/susumu-sync') {
       return [{ text: 'Product Detail', href: '#/susumu-sync' }];
     }
+    if (currentPath === '/settings') {
+      return [{ text: 'Settings', href: '#/settings' }];
+    }
     return [{ text: 'Dashboard', href: '#/' }];
   };
 
