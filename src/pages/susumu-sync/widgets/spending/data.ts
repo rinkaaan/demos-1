@@ -1,5 +1,3 @@
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: MIT-0
 export const spendingData = [
   {
     week: new Date(2020, 7, 3).getTime(),

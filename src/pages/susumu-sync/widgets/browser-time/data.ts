@@ -1,5 +1,3 @@
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: MIT-0
 export const browserTimeData = [
   { date: new Date(2020, 8, 16).getTime(), reddit: 120, github: 95, linkedin: 45, youtube: 180, yahoo: 30 },
   { date: new Date(2020, 8, 17).getTime(), reddit: 135, github: 110, linkedin: 60, youtube: 165, yahoo: 25 },

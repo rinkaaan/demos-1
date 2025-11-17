@@ -1,5 +1,3 @@
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: MIT-0
 import React, { FC, useEffect, useState } from 'react';
 
 import SpaceBetween from '@cloudscape-design/components/space-between';
