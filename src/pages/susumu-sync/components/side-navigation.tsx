@@ -1,12 +1,11 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
-import React, { useState } from 'react';
+import React from 'react';
 
 import { SideNavigationProps } from '@cloudscape-design/components/side-navigation';
 
 import { Navigation as CommonNavigation } from '../../commons';
 import { useRouter } from '../router';
-import { DensityPreferencesDialog } from './density-preferences';
 
 const navItems: SideNavigationProps['items'] = [
   { type: 'link', text: 'Dashboard', href: '#/' },
@@ -32,37 +31,25 @@ const navItems: SideNavigationProps['items'] = [
   { type: 'divider' },
   {
     type: 'link',
-    href: '#/density_settings',
-    text: 'Density settings',
-  },
-  {
-    type: 'link',
     href: '#/settings',
     text: 'Settings',
   },
 ];
 
 export function SusumuSyncSideNavigation() {
-  const [dialogVisible, setDialogVisible] = useState(false);
   const { currentPath } = useRouter();
 
-  const onFollowHandler: SideNavigationProps['onFollow'] = event => {
-    if (event.detail.href === '#/density_settings') {
-      event.preventDefault();
-      setDialogVisible(true);
-    }
-    // Let other navigation happen naturally via hash change
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const onFollowHandler: SideNavigationProps['onFollow'] = () => {
+    // We need to pass a handler to override the default onFollow handler, which prevents navigation.
   };
 
   return (
-    <>
-      <CommonNavigation
-        header={{ text: 'Susumu Sync', href: '#/susumu-sync' }}
-        items={navItems}
-        activeHref={currentPath ? `#${currentPath}` : '#/'}
-        onFollowHandler={onFollowHandler}
-      />
-      {dialogVisible && <DensityPreferencesDialog onDismiss={() => setDialogVisible(false)} />}
-    </>
+    <CommonNavigation
+      header={{ text: 'Susumu Sync', href: '#/susumu-sync' }}
+      items={navItems}
+      activeHref={currentPath ? `#${currentPath}` : '#/'}
+      onFollowHandler={onFollowHandler}
+    />
   );
 }

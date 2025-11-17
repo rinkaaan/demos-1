@@ -1,6 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 import React from 'react';
+import { useState } from 'react';
 
 import Button from '@cloudscape-design/components/button';
 import Container from '@cloudscape-design/components/container';
@@ -8,7 +9,10 @@ import Header from '@cloudscape-design/components/header';
 import KeyValuePairs from '@cloudscape-design/components/key-value-pairs';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 
+import { DensityPreferencesDialog } from './density-preferences';
+
 export function SettingsPage() {
+  const [dialogVisible, setDialogVisible] = useState(false);
   return (
     <SpaceBetween size="m">
       <Header
@@ -21,7 +25,11 @@ export function SettingsPage() {
         header={
           <Header
             variant="h2"
-            actions={<Button variant="normal">Edit</Button>}
+            actions={
+              <Button variant="normal" onClick={() => setDialogVisible(true)}>
+                Edit
+              </Button>
+            }
             description="Customize your default layout and navigation settings for the DynamoDB console."
           >
             Layout and navigation settings
@@ -42,6 +50,7 @@ export function SettingsPage() {
           ]}
         />
       </Container>
+      {dialogVisible && <DensityPreferencesDialog onDismiss={() => setDialogVisible(false)} />}
     </SpaceBetween>
   );
 }
