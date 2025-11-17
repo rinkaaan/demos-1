@@ -112,6 +112,10 @@
     "title": "Susumu Sync"
   },
   {
+    "path": "musubi-auth",
+    "title": "Musubi Auth"
+  },
+  {
     "path": "configurable-dashboard",
     "title": "Configurable dashboard"
   },

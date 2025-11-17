@@ -1,0 +1,18 @@
+import React from 'react';
+
+import { BoardProps } from '@cloudscape-design/board-components/board';
+
+export interface WidgetDataType {
+  title: string;
+  description: string;
+  disableContentPaddings?: boolean;
+  provider?: React.JSXElementConstructor<{ children: React.ReactElement }>;
+  header: React.JSXElementConstructor<Record<string, never>>;
+  content: React.JSXElementConstructor<Record<string, never>>;
+  footer?: React.JSXElementConstructor<Record<string, never>>;
+  staticMinHeight?: number;
+}
+
+export type DashboardWidgetItem = BoardProps.Item<WidgetDataType>;
+
+export type WidgetConfig = Pick<DashboardWidgetItem, 'definition' | 'data'>;
