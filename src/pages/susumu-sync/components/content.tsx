@@ -4,7 +4,7 @@ import React from 'react';
 
 import Grid from '@cloudscape-design/components/grid';
 
-import { BaseStaticWidget, browserTime, schedule, spending, todos } from '../widgets';
+import { BaseStaticWidget, bookmarks, browserTime, schedule, spending, todos } from '../widgets';
 
 export function Content() {
   return (
@@ -14,9 +14,10 @@ export function Content() {
         { colspan: { l: 4, m: 6, default: 12 } },
         { colspan: { l: 4, m: 6, default: 12 } },
         { colspan: { l: 4, m: 6, default: 12 } },
+        { colspan: { l: 4, m: 6, default: 12 } },
       ]}
     >
-      {[todos, browserTime, schedule, spending].map((widget, index) => (
+      {[todos, schedule, bookmarks, browserTime, spending].map((widget, index) => (
         <BaseStaticWidget key={index} config={widget.data} />
       ))}
     </Grid>
