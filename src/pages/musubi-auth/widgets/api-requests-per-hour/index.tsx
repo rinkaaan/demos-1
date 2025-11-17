@@ -8,22 +8,22 @@ import Link from '@cloudscape-design/components/link';
 import {
   barChartInstructions,
   commonChartProps,
-  dateFormatter,
+  dateTimeFormatter,
   numberTickFormatter,
   useHighcharts,
 } from '../chart-commons';
 import { WidgetConfig } from '../interfaces';
-import { browserTimeData, browserTimeSeries } from './data';
+import { apiRequestsData, apiRequestsSeries } from './data';
 
-function BrowserTimeHeader() {
+function ApiRequestsPerHourHeader() {
   return (
-    <Header variant="h2" description="Daily browser time by website" actions={undefined}>
-      Browser time
+    <Header variant="h2" description="API requests made per hour by method" actions={undefined}>
+      API requests per hour
     </Header>
   );
 }
 
-function BrowserTimeContent() {
+function ApiRequestsPerHourContent() {
   const highcharts = useHighcharts();
   return (
     <CartesianChart
@@ -34,17 +34,17 @@ function BrowserTimeContent() {
       chartHeight={25}
       xAxis={{
         type: 'category',
-        title: 'Date',
-        categories: browserTimeData.map(datum => dateFormatter(datum.date)),
+        title: 'Hour',
+        categories: apiRequestsData.map(datum => dateTimeFormatter(datum.date)),
       }}
-      yAxis={{ title: 'Total browser time (minutes)', min: 0, max: 600, valueFormatter: numberTickFormatter }}
-      ariaLabel="Browser time"
-      series={browserTimeSeries}
+      yAxis={{ title: 'Total API requests', min: 0, valueFormatter: numberTickFormatter }}
+      ariaLabel="API requests per hour"
+      series={apiRequestsSeries}
       i18nStrings={{
         ...commonChartProps.i18nStrings,
-        chartRoleDescription: `Bar chart showing total browser time per website over the last 15 days. ${barChartInstructions}`,
-        seriesFilterLabel: 'Filter displayed websites',
-        seriesFilterPlaceholder: 'Filter websites',
+        chartRoleDescription: `Bar chart showing total API requests per hour by HTTP method over the last 24 hours. ${barChartInstructions}`,
+        seriesFilterLabel: 'Filter displayed HTTP methods',
+        seriesFilterPlaceholder: 'Filter HTTP methods',
       }}
       tooltip={{
         point: ({ item }) => ({
@@ -53,7 +53,7 @@ function BrowserTimeContent() {
             <Link
               external={true}
               href="#"
-              ariaLabel={`See details for ${item.y} minutes on ${item.series.name} (opens in a new tab)`}
+              ariaLabel={`See details for ${item.y} ${item.series.name} requests (opens in a new tab)`}
             >
               {item.y}
             </Link>
@@ -64,23 +64,23 @@ function BrowserTimeContent() {
   );
 }
 
-function BrowserTimeFooter() {
+function ApiRequestsPerHourFooter() {
   return (
     <Box textAlign="center">
       <Link href="#" variant="primary">
-        View browser history
+        View API logs
       </Link>
     </Box>
   );
 }
-export const browserTime: WidgetConfig = {
+export const apiRequestsPerHour: WidgetConfig = {
   definition: { defaultRowSpan: 4, defaultColumnSpan: 2, minRowSpan: 3 },
   data: {
-    title: 'Browser time',
-    description: 'Daily browser time by website',
-    header: BrowserTimeHeader,
-    content: BrowserTimeContent,
-    footer: BrowserTimeFooter,
+    title: 'API requests per hour',
+    description: 'API requests made per hour by method',
+    header: ApiRequestsPerHourHeader,
+    content: ApiRequestsPerHourContent,
+    footer: ApiRequestsPerHourFooter,
     staticMinHeight: 560,
   },
 };
