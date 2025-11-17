@@ -27,7 +27,7 @@ export function App() {
 
   const getBreadcrumbItems = () => {
     if (currentPath === '/susumu-sync') {
-      return [{ text: 'Product Detail', href: '#/susumu-sync' }];
+      return [];
     }
     if (currentPath === '/settings') {
       return [{ text: 'Settings', href: '#/settings' }];
@@ -40,7 +40,7 @@ export function App() {
       <CustomAppLayout
         ref={appLayout}
         content={<Router />}
-        breadcrumbs={<Breadcrumbs items={getBreadcrumbItems()} rootText="SusumuSync" rootHref="#/susumu-sync" />}
+        breadcrumbs={<Breadcrumbs items={getBreadcrumbItems()} rootText="Susumu Sync" rootHref="#/susumu-sync" />}
         navigation={<SusumuSyncSideNavigation />}
         navigationOpen={navigationOpen}
         onNavigationChange={({ detail }) => setNavigationOpen(detail.open)}

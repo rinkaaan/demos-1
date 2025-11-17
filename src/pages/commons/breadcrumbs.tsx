@@ -13,6 +13,9 @@ export function Breadcrumbs({
   rootText?: string;
   rootHref?: string;
 }) {
+  if (items.length === 0) {
+    return null;
+  }
   return (
     <BreadcrumbGroup
       items={[{ text: rootText, href: rootHref }, ...items]}
