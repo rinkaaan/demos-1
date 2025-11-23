@@ -108,14 +108,6 @@
     "title": "Service dashboard"
   },
   {
-    "path": "susumu-sync",
-    "title": "Susumu Sync"
-  },
-  {
-    "path": "musubi-auth",
-    "title": "Musubi Auth"
-  },
-  {
     "path": "configurable-dashboard",
     "title": "Configurable dashboard"
   },
@@ -134,5 +126,17 @@
   {
     "path": "non-console",
     "title": "Top navigation"
+  },
+  {
+    "path": "susumu-sync",
+    "title": "Susumu Sync"
+  },
+  {
+    "path": "musubi-auth",
+    "title": "Musubi Auth"
+  },
+  {
+    "path": "solana-kit-demos",
+    "title": "Solana Kit Demos"
   }
 ]
