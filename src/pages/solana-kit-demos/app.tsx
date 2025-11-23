@@ -1,33 +1,91 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { AppLayoutProps } from '@cloudscape-design/components/app-layout';
+import BreadcrumbGroup from '@cloudscape-design/components/breadcrumb-group';
+import Header from '@cloudscape-design/components/header';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Tabs from '@cloudscape-design/components/tabs';
 
-import { CustomAppLayout, Navigation, Notifications } from '../commons/common-components';
-import { BehaviorsTable } from '../details/components/behaviors-table';
-import { Breadcrumbs } from '../details/components/breadcrumbs';
-import { EmptyTable } from '../details/components/empty-table';
-import { GeneralConfig } from '../details/components/general-config';
-import { OriginsTable } from '../details/components/origins-table';
-import { PageHeader } from '../details/components/page-header';
-import { TagsTable } from '../details/components/tags-table';
-import { INSTANCE_DROPDOWN_ITEMS, INVALIDATIONS_COLUMN_DEFINITIONS } from '../details/details-config';
-import ToolsContent from '../details/tools-content';
-import { Details } from './components/details';
-import { LogsTable } from './components/logs-table';
+import { CustomAppLayout } from '../commons/common-components';
+import { LiveTransactions } from './components/live-transactions';
+import { Navigation } from './components/navigation';
+import { SlotNotifications } from './components/slot-notifications';
+import { TransactionHistory } from './components/transaction-history';
+import { WalletBalance } from './components/wallet-balance';
+
+const Breadcrumbs = () => (
+  <BreadcrumbGroup
+    items={[{ text: 'Solana Kit Demos', href: '#/solana-kit-demos' }]}
+    onFollow={event => event.preventDefault()}
+  />
+);
 
 export function App() {
-  const [toolsIndex, setToolsIndex] = useState<number>(0);
-  const [toolsOpen, setToolsOpen] = useState<boolean>(false);
   const appLayout = useRef<AppLayoutProps.Ref>(null);
+  const [activeSection, setActiveSection] = useState<'http' | 'websocket'>('http');
+  const [activeTabId, setActiveTabId] = useState<string>('wallet-balance');
 
-  const loadHelpPanelContent = (index: number): void => {
-    setToolsIndex(index);
-    setToolsOpen(true);
-    appLayout.current?.focusToolsClose();
+  useEffect(() => {
+    // Determine active section from hash
+    const hash = window.location.hash;
+    if (hash.includes('/websocket')) {
+      setActiveSection('websocket');
+      // Set first tab of websocket section
+      setActiveTabId('live-transactions');
+    } else {
+      setActiveSection('http');
+      // Set first tab of http section
+      setActiveTabId('wallet-balance');
+    }
+
+    // Listen for hash changes
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash.includes('/websocket')) {
+        setActiveSection('websocket');
+        // Set first tab of websocket section
+        setActiveTabId('live-transactions');
+      } else {
+        setActiveSection('http');
+        // Set first tab of http section
+        setActiveTabId('wallet-balance');
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  const httpTabs = [
+    {
+      label: 'Wallet Balance',
+      id: 'wallet-balance',
+      content: <WalletBalance />,
+    },
+    {
+      label: 'Transaction History',
+      id: 'transaction-history',
+      content: <TransactionHistory />,
+    },
+  ];
+
+  const websocketTabs = [
+    {
+      label: 'Live Transactions',
+      id: 'live-transactions',
+      content: <LiveTransactions />,
+    },
+    {
+      label: 'Slot Notifications',
+      id: 'slot-notifications',
+      content: <SlotNotifications />,
+    },
+  ];
+
+  const getActiveHref = () => {
+    return activeSection === 'websocket' ? '#/solana-kit-demos/websocket' : '#/solana-kit-demos/http';
   };
 
   return (
@@ -35,71 +93,20 @@ export function App() {
       ref={appLayout}
       content={
         <SpaceBetween size="m">
-          <PageHeader
-            buttons={[
-              {
-                text: 'Actions',
-                items: INSTANCE_DROPDOWN_ITEMS,
-                itemType: 'group',
-              },
-              {
-                text: 'Edit',
-                itemType: 'action',
-                id: 'edit',
-              },
-              {
-                text: 'Delete',
-                itemType: 'action',
-                id: 'delete',
-              },
-            ]}
-          />
+          <Header variant="h1">Solana Kit API Demos</Header>
           <SpaceBetween size="l">
-            <GeneralConfig />
             <Tabs
-              tabs={[
-                {
-                  label: 'Details',
-                  id: 'details',
-                  content: <Details loadHelpPanelContent={loadHelpPanelContent} />,
-                },
-                {
-                  label: 'Logs',
-                  id: 'logs',
-                  content: <LogsTable />,
-                },
-                {
-                  label: 'Origins',
-                  id: 'origins',
-                  content: <OriginsTable />,
-                },
-                {
-                  label: 'Behaviors',
-                  id: 'behaviors',
-                  content: <BehaviorsTable />,
-                },
-                {
-                  label: 'Invalidations',
-                  id: 'invalidations',
-                  content: <EmptyTable title="Invalidation" columnDefinitions={INVALIDATIONS_COLUMN_DEFINITIONS} />,
-                },
-                {
-                  label: 'Tags',
-                  id: 'tags',
-                  content: <TagsTable loadHelpPanelContent={loadHelpPanelContent} />,
-                },
-              ]}
-              ariaLabel="Resource details"
+              tabs={activeSection === 'http' ? httpTabs : websocketTabs}
+              activeTabId={activeTabId}
+              onChange={({ detail }) => setActiveTabId(detail.activeTabId)}
+              ariaLabel={`Solana Kit ${activeSection} demos`}
             />
           </SpaceBetween>
         </SpaceBetween>
       }
       breadcrumbs={<Breadcrumbs />}
-      navigation={<Navigation activeHref="#/distributions" />}
-      tools={ToolsContent[toolsIndex]}
-      toolsOpen={toolsOpen}
-      onToolsChange={({ detail }: { detail: { open: boolean } }) => setToolsOpen(detail.open)}
-      notifications={<Notifications />}
+      navigation={<Navigation activeHref={getActiveHref()} />}
+      toolsHide
     />
   );
 }
