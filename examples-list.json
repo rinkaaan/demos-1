@@ -138,5 +138,9 @@
   {
     "path": "solana-kit-demos",
     "title": "Solana Kit Demos"
+  },
+  {
+    "path": "solseki",
+    "title": "Solseki"
   }
 ]
