@@ -1,3 +1,3 @@
 export { BaseStaticWidget } from './base-static-widget';
-export { apiRequestsPerHour } from './api-requests-per-hour';
+export { solsekiChart } from './solseki-chart';
 export { userManagement } from './user-management';

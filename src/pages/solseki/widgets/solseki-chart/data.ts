@@ -1,4 +1,4 @@
-export const apiRequestsData = [
+export const solsekiChartData = [
   { date: new Date(2020, 8, 16, 0).getTime(), get: 1200, post: 850, put: 320, delete: 45 },
   { date: new Date(2020, 8, 16, 1).getTime(), get: 980, post: 720, put: 280, delete: 38 },
   { date: new Date(2020, 8, 16, 2).getTime(), get: 750, post: 550, put: 210, delete: 25 },
@@ -25,25 +25,25 @@ export const apiRequestsData = [
   { date: new Date(2020, 8, 16, 23).getTime(), get: 900, post: 630, put: 235, delete: 28 },
 ];
 
-export const apiRequestsSeries = [
+export const solsekiChartSeries = [
   {
     name: 'GET',
     type: 'column',
-    data: apiRequestsData.map(datum => datum.get),
+    data: solsekiChartData.map(datum => datum.get),
   },
   {
     name: 'POST',
     type: 'column',
-    data: apiRequestsData.map(datum => datum.post),
+    data: solsekiChartData.map(datum => datum.post),
   },
   {
     name: 'PUT',
     type: 'column',
-    data: apiRequestsData.map(datum => datum.put),
+    data: solsekiChartData.map(datum => datum.put),
   },
   {
     name: 'DELETE',
     type: 'column',
-    data: apiRequestsData.map(datum => datum.delete),
+    data: solsekiChartData.map(datum => datum.delete),
   },
 ] as const;
