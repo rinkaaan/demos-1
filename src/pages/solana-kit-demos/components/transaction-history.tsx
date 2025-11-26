@@ -1,10 +1,12 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 import React, { useRef, useState } from 'react';
+import { address, createSolanaRpc } from '@solana/kit';
 
 import Box from '@cloudscape-design/components/box';
 import Button from '@cloudscape-design/components/button';
 import Container from '@cloudscape-design/components/container';
+import ExpandableSection from '@cloudscape-design/components/expandable-section';
 import FormField from '@cloudscape-design/components/form-field';
 import Grid from '@cloudscape-design/components/grid';
 import Header from '@cloudscape-design/components/header';
@@ -76,6 +78,9 @@ const COLUMN_DEFINITIONS: TableProps.ColumnDefinition<Transaction>[] = [
 ];
 
 export const TransactionHistory = () => {
+  const [rpcEndpoint, setRpcEndpoint] = useState<string>(
+    'https://mainnet.helius-rpc.com/?api-key=27a88f0e-df04-4a0d-8725-b5110e4f4547',
+  );
   const [walletAddress, setWalletAddress] = useState<string>('');
   const [walletAddressError, setWalletAddressError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -94,39 +99,46 @@ export const TransactionHistory = () => {
     setWalletAddressError('');
 
     try {
-      // Note: This is a placeholder implementation
-      // In a real implementation, you would use @solana/kit:
-      // import { createSolanaRpc, address } from '@solana/kit';
-      // const rpc = createSolanaRpc('https://api.mainnet-beta.solana.com');
-      // const walletAddr = address(walletAddress);
-      // const { value: signatures } = await rpc.getConfirmedSignaturesForAddress2(walletAddr).send();
-      // const transactions = await Promise.all(
-      //   signatures.map(async (sig) => {
-      //     const { value: tx } = await rpc.getTransaction(sig.signature).send();
-      //     return {
-      //       signature: sig.signature,
-      //       slot: sig.slot,
-      //       blockTime: sig.blockTime,
-      //       status: tx?.meta?.err ? 'failed' : 'success',
-      //       fee: tx?.meta?.fee || 0,
-      //     };
-      //   })
-      // );
+      const rpc = createSolanaRpc(rpcEndpoint);
+      const walletAddr = address(walletAddress);
 
-      // For demo purposes, simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Fetch recent signatures
+      const signatures = await rpc.getSignaturesForAddress(walletAddr, { limit: 10 }).send();
 
-      // Simulated transactions
-      const mockTransactions: Transaction[] = Array.from({ length: 10 }, (_, i) => ({
-        signature: `${walletAddress.substring(0, 8)}${i.toString().padStart(64, '0')}`,
-        slot: 200000000 + i * 1000,
-        blockTime: Math.floor(Date.now() / 1000) - i * 3600,
-        status: Math.random() > 0.1 ? 'success' : ('failed' as 'success' | 'failed'),
-        fee: Math.floor(Math.random() * 10000),
-      }));
+      // Fetch transaction details for each signature to get fee info
+      const transactionsList = await Promise.all(
+        signatures.map(async sig => {
+          try {
+            const tx = await rpc
+              .getTransaction(sig.signature, {
+                maxSupportedTransactionVersion: 0,
+                encoding: 'json',
+              })
+              .send();
 
-      setTransactions(mockTransactions);
+            return {
+              signature: sig.signature,
+              slot: Number(sig.slot),
+              blockTime: Number(sig.blockTime),
+              status: sig.err ? 'failed' : 'success',
+              fee: tx && tx.meta ? Number(tx.meta.fee) : 0,
+            } as Transaction;
+          } catch (e) {
+            // Fallback if getTransaction fails (e.g. pruned)
+            return {
+              signature: sig.signature,
+              slot: Number(sig.slot),
+              blockTime: Number(sig.blockTime),
+              status: sig.err ? 'failed' : 'success',
+              fee: 0,
+            } as Transaction;
+          }
+        }),
+      );
+
+      setTransactions(transactionsList);
     } catch (err) {
+      console.error(err);
       setWalletAddressError(err instanceof Error ? err.message : 'Failed to fetch transactions');
     } finally {
       setLoading(false);
@@ -154,6 +166,17 @@ export const TransactionHistory = () => {
       }
     >
       <SpaceBetween size="m">
+        <ExpandableSection headerText="RPC Configuration">
+          <FormField label="RPC Endpoint" description="The Solana RPC endpoint to use for fetching data">
+            <Input
+              value={rpcEndpoint}
+              onChange={({ detail }) => setRpcEndpoint(detail.value)}
+              placeholder="https://mainnet.helius-rpc.com/?api-key=27a88f0e-df04-4a0d-8725-b5110e4f4547"
+              disabled={loading}
+            />
+          </FormField>
+        </ExpandableSection>
+
         <FormField
           label="Wallet Address"
           description="Enter a Solana wallet address to view its transaction history"

@@ -1,11 +1,13 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 import React, { useEffect, useRef, useState } from 'react';
+import { address, createSolanaRpc, createSolanaRpcSubscriptions } from '@solana/kit';
 
 import Badge from '@cloudscape-design/components/badge';
 import Box from '@cloudscape-design/components/box';
 import Button from '@cloudscape-design/components/button';
 import Container from '@cloudscape-design/components/container';
+import ExpandableSection from '@cloudscape-design/components/expandable-section';
 import FormField from '@cloudscape-design/components/form-field';
 import Header from '@cloudscape-design/components/header';
 import Input from '@cloudscape-design/components/input';
@@ -18,6 +20,7 @@ interface LiveTransaction {
   slot: number;
   timestamp: number;
   type: 'incoming' | 'outgoing';
+  amount?: number;
 }
 
 const COLUMN_DEFINITIONS: TableProps.ColumnDefinition<LiveTransaction>[] = [
@@ -49,9 +52,17 @@ const COLUMN_DEFINITIONS: TableProps.ColumnDefinition<LiveTransaction>[] = [
       </Badge>
     ),
   },
+  {
+    id: 'amount',
+    header: 'Amount (SOL)',
+    cell: item => (item.amount !== undefined ? item.amount.toFixed(4) : '-'),
+  },
 ];
 
 export const LiveTransactions = () => {
+  const [rpcEndpoint, setRpcEndpoint] = useState<string>(
+    'wss://mainnet.helius-rpc.com/?api-key=27a88f0e-df04-4a0d-8725-b5110e4f4547',
+  );
   const [walletAddress, setWalletAddress] = useState<string>('');
   const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
   const [transactions, setTransactions] = useState<LiveTransaction[]>([]);
@@ -70,7 +81,7 @@ export const LiveTransactions = () => {
     };
   }, []);
 
-  const startSubscription = () => {
+  const startSubscription = async () => {
     if (!walletAddress.trim()) {
       setError('Please enter a wallet address');
       return;
@@ -79,44 +90,79 @@ export const LiveTransactions = () => {
     setError(null);
     setIsSubscribed(true);
 
-    // Note: This is a placeholder implementation
-    // In a real implementation, you would use @solana/kit:
-    // import { createSolanaRpcSubscriptions, address } from '@solana/kit';
-    // const rpcSubscriptions = createSolanaRpcSubscriptions('wss://api.mainnet-beta.solana.com');
-    // const walletAddr = address(walletAddress);
-    // const subscription = await rpcSubscriptions.accountNotifications(walletAddr).subscribe();
-    //
-    // for await (const notification of subscription) {
-    //   setTransactions(prev => [{
-    //     signature: notification.context.slot.toString(),
-    //     slot: notification.context.slot,
-    //     timestamp: Date.now(),
-    //     type: Math.random() > 0.5 ? 'incoming' : 'outgoing',
-    //   }, ...prev].slice(0, 50));
-    // }
+    try {
+      const rpcSubscriptions = createSolanaRpcSubscriptions(rpcEndpoint);
+      const rpc = createSolanaRpc(rpcEndpoint.replace('wss://', 'https://'));
+      const walletAddr = address(walletAddress);
+      const abortController = new AbortController();
 
-    // Simulate live updates
-    intervalRef.current = setInterval(() => {
-      if (Math.random() > 0.7) {
-        const newTx: LiveTransaction = {
-          signature: `${walletAddress.substring(0, 8)}${Date.now().toString().padStart(64, '0')}`,
-          slot: Math.floor(Math.random() * 200000000) + 200000000,
-          timestamp: Date.now(),
-          type: Math.random() > 0.5 ? 'incoming' : 'outgoing',
-        };
-        setTransactions(prev => [newTx, ...prev].slice(0, 50));
-      }
-    }, 2000);
+      const subscription = await rpcSubscriptions
+        .logsNotifications({ mentions: [walletAddr] })
+        .subscribe({ abortSignal: abortController.signal });
 
-    subscriptionRef.current = {
-      unsubscribe: () => {
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-          intervalRef.current = null;
+      subscriptionRef.current = {
+        unsubscribe: () => {
+          abortController.abort();
+          setIsSubscribed(false);
+        },
+      };
+
+      // Process notifications
+      (async () => {
+        try {
+          for await (const notification of subscription) {
+            let amount: number | undefined;
+            let type: 'incoming' | 'outgoing' = 'incoming';
+
+            try {
+              const tx = await rpc
+                .getTransaction(notification.value.signature, {
+                  encoding: 'jsonParsed',
+                  maxSupportedTransactionVersion: 0,
+                })
+                .send();
+
+              if (tx && tx.meta && tx.transaction && 'message' in tx.transaction) {
+                const accountKeys = tx.transaction.message.accountKeys;
+                const accountIndex = accountKeys.findIndex(k => k.pubkey === walletAddress);
+
+                if (accountIndex !== -1) {
+                  const preBalance = Number(tx.meta.preBalances[accountIndex]);
+                  const postBalance = Number(tx.meta.postBalances[accountIndex]);
+                  const diff = (postBalance - preBalance) / 1e9;
+
+                  amount = Math.abs(diff);
+                  type = diff >= 0 ? 'incoming' : 'outgoing';
+                }
+              }
+            } catch (err) {
+              console.error('Failed to fetch transaction details:', err);
+            }
+
+            setTransactions(prev =>
+              [
+                {
+                  signature: notification.value.signature,
+                  slot: Number(notification.context.slot),
+                  timestamp: Date.now(),
+                  type,
+                  amount,
+                },
+                ...prev,
+              ].slice(0, 50),
+            );
+          }
+        } catch (e: any) {
+          if (e.name !== 'AbortError') {
+            console.error('Subscription error:', e);
+          }
         }
-        setIsSubscribed(false);
-      },
-    };
+      })();
+    } catch (err) {
+      console.error(err);
+      setError('Failed to start subscription');
+      setIsSubscribed(false);
+    }
   };
 
   const stopSubscription = () => {
@@ -151,6 +197,20 @@ export const LiveTransactions = () => {
       }
     >
       <SpaceBetween size="m">
+        <ExpandableSection headerText="RPC Configuration">
+          <FormField
+            label="RPC WebSocket Endpoint"
+            description="The Solana RPC WebSocket endpoint to use for subscriptions"
+          >
+            <Input
+              value={rpcEndpoint}
+              onChange={({ detail }) => setRpcEndpoint(detail.value)}
+              placeholder="wss://mainnet.helius-rpc.com/?api-key=27a88f0e-df04-4a0d-8725-b5110e4f4547"
+              disabled={isSubscribed}
+            />
+          </FormField>
+        </ExpandableSection>
+
         <FormField
           label="Wallet Address"
           description="Subscribe to real-time transaction notifications for a wallet address"

@@ -1,10 +1,12 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 import React, { useRef, useState } from 'react';
+import { address, createSolanaRpc } from '@solana/kit';
 
 import Box from '@cloudscape-design/components/box';
 import Button from '@cloudscape-design/components/button';
 import Container from '@cloudscape-design/components/container';
+import ExpandableSection from '@cloudscape-design/components/expandable-section';
 import FormField from '@cloudscape-design/components/form-field';
 import Grid from '@cloudscape-design/components/grid';
 import Header from '@cloudscape-design/components/header';
@@ -32,6 +34,9 @@ const validateWalletAddress = (value: string): string | undefined => {
 };
 
 export const WalletBalance = () => {
+  const [rpcEndpoint, setRpcEndpoint] = useState<string>(
+    'https://mainnet.helius-rpc.com/?api-key=27a88f0e-df04-4a0d-8725-b5110e4f4547',
+  );
   const [walletAddress, setWalletAddress] = useState<string>('');
   const [walletAddressError, setWalletAddressError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -53,29 +58,55 @@ export const WalletBalance = () => {
     setTokenBalances([]);
 
     try {
-      // Note: This is a placeholder implementation
-      // In a real implementation, you would use @solana/kit:
-      // import { createSolanaRpc, address } from '@solana/kit';
-      // const rpc = createSolanaRpc('https://api.mainnet-beta.solana.com');
-      // const walletAddr = address(walletAddress);
-      // const { value: balance } = await rpc.getBalance(walletAddr).send();
-      // const solBalanceLamports = Number(balance);
-      // const solBalanceSOL = solBalanceLamports / 1e9;
+      const rpc = createSolanaRpc(rpcEndpoint);
+      const walletAddr = address(walletAddress);
+      const { value: balance } = await rpc.getBalance(walletAddr).send();
+      const solBalanceLamports = Number(balance);
+      const solBalanceSOL = (solBalanceLamports / 1e9).toFixed(4);
 
-      // For demo purposes, simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      setSolBalance(solBalanceSOL);
 
-      // Simulated response
-      const mockSolBalance = (Math.random() * 10).toFixed(4);
-      setSolBalance(mockSolBalance);
+      // Fetch token accounts (USDC and USDT)
+      const TOKEN_PROGRAM_ID = address('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
 
-      // Simulated token balances
-      const mockTokens: TokenBalance[] = [
-        { mint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', amount: '1250.50', decimals: 6, symbol: 'USDC' },
-        { mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', amount: '500.25', decimals: 6, symbol: 'USDT' },
-      ];
-      setTokenBalances(mockTokens);
+      try {
+        const { value: tokenAccounts } = await rpc
+          .getTokenAccountsByOwner(walletAddr, { programId: TOKEN_PROGRAM_ID }, { encoding: 'jsonParsed' })
+          .send();
+
+        const relevantMints: Record<string, string> = {
+          EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v: 'USDC',
+          Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB: 'USDT',
+        };
+
+        const tokens: TokenBalance[] = [];
+
+        if (Array.isArray(tokenAccounts)) {
+          for (const account of tokenAccounts) {
+            // account.account.data is typed as generic, so we cast to access parsed fields
+            const data = account.account.data as any;
+            if (data && data.parsed && data.parsed.info) {
+              const info = data.parsed.info;
+              const mint = info.mint;
+
+              if (relevantMints[mint]) {
+                tokens.push({
+                  mint,
+                  amount: info.tokenAmount.amount,
+                  decimals: info.tokenAmount.decimals,
+                  symbol: relevantMints[mint],
+                });
+              }
+            }
+          }
+        }
+        setTokenBalances(tokens);
+      } catch (tokenErr) {
+        console.error('Failed to fetch token accounts:', tokenErr);
+        // Non-fatal error, just log it and show empty/partial results
+      }
     } catch (err) {
+      console.error(err);
       setWalletAddressError(err instanceof Error ? err.message : 'Failed to fetch balance');
     } finally {
       setLoading(false);
@@ -90,6 +121,16 @@ export const WalletBalance = () => {
   return (
     <Container header={<Header variant="h2">Wallet Balance</Header>}>
       <SpaceBetween size="m">
+        <ExpandableSection headerText="RPC Configuration">
+          <FormField label="RPC Endpoint" description="The Solana RPC endpoint to use for fetching data">
+            <Input
+              value={rpcEndpoint}
+              onChange={({ detail }) => setRpcEndpoint(detail.value)}
+              placeholder="https://mainnet.helius-rpc.com/?api-key=27a88f0e-df04-4a0d-8725-b5110e4f4547"
+            />
+          </FormField>
+        </ExpandableSection>
+
         <FormField
           label="Wallet Address"
           description="Enter a Solana wallet address to view its balances"
